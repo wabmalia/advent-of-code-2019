@@ -1,5 +1,5 @@
 
-inputOne =[
+input =[
     140517,61738,141916,78376,69208,131761,67212,137805,79089,
     100457,108707,75235,51118,149457,68888,85722,91418,74481,
     93441,124911,75441,101542,149092,83149,139256,83398,76398,
@@ -14,14 +14,28 @@ inputOne =[
 ]
 
 defmodule DayOne do
-    def partOne(input) do
-        fuel = fn (mass) -> div(mass, 3) - 2 end
 
-        Stream.map(input, &(fuel.(&1)))
-            # |> Stream.map(&(IO.inspect(&1)))
+    def fuel(mass) do
+        div(mass, 3) - 2
+    end
+
+    def fuelForFuel(mass) do
+        fuel(mass) |> (&(if &1 > 0, do: &1 + fuelForFuel(&1), else: 0)).()
+    end
+
+    def partOne(input) do
+        Stream.map(input, &(fuel &1))
+            |> Enum.sum()
+    end
+
+    def partTwo(input) do
+        Stream.map(input, &(fuelForFuel &1))
             |> Enum.sum()
     end
 end
 
 IO.puts("--- Part One ---")
-IO.puts("Answer: #{DayOne.partOne inputOne}")
+IO.puts("Answer: #{DayOne.partOne input}")
+
+IO.puts("--- Part Two ---")
+IO.puts("Answer: #{DayOne.partTwo input}")
